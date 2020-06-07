@@ -39,5 +39,5 @@ stages:
           - task: Docker@2
             displayName: Build image for multiple platforms
             inputs:
-              command: buildx build
-              arguments: "-t $(image):$(tag) --push ./sample"
+              command: buildx
+              arguments: "build -t $(image):$(tag) --push ./sample"
