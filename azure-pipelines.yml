@@ -40,4 +40,4 @@ stages:
             displayName: Build image for multiple platforms
             inputs:
               command: buildx build
-              arguments: "--tag $(image):$(tag) --push ./sample"
+              arguments: "-t $(image):$(tag) --push ./sample"
