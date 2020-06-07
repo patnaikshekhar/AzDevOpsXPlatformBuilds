@@ -30,7 +30,7 @@ stages:
             displayName: Install QEMU
             inputs:
               command: run
-              arguments: "--privileged linuxkit/binfmt"
+              arguments: "--privileged linuxkit/binfmt:0.7"
           - task: Docker@2
             displayName: Create a builder
             inputs:
