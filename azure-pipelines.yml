@@ -1,40 +1,43 @@
 # Docker
-# Build a Docker image 
+# Build a Docker image
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- master
+  - master
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  image: "patnaikshekhar/xplatbuild"
+  tag: "$(Build.BuildId)"
+  platform: "linux/arm64,linux/amd64"
 
 stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: 'export DOCKER_CLI_EXPERIMENTAL=enabled'
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: buildx
-        dockerfile: '$(Build.SourcesDirectory)/sample/Dockerfile'
-        tags: |
-          $(tag)
-    # - task: Docker@2
-    #   displayName: Build an image
-    #   inputs:
-    #     command: build
-    #     dockerfile: '$(Build.SourcesDirectory)/sample/Dockerfile'
-    #     tags: |
-    #       $(tag)
+  - stage: Build
+    displayName: Build cross platform images
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: "export DOCKER_CLI_EXPERIMENTAL=enabled"
+          - task: Docker@2
+            displayName: Intall QEMU
+            inputs:
+              command: run
+              arguments: "run --privileged linuxkit/binfmt"
+          - task: Docker@2
+            displayName: Create a builder
+            inputs:
+              command: buildx
+              arguments: "create --use --platform ${platform} --name xplatbuilder"
+          - task: Docker@2
+            displayName: Build image for multiple platforms
+            inputs:
+              command: buildx build
+              arguments: "--tag ${image}:${tag} --push ./sample"
