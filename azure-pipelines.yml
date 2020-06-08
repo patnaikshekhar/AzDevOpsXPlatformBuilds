@@ -37,6 +37,10 @@ stages:
               command: buildx
               arguments: "create --use --platform $(platform) --name xplatbuilder"
           - task: Docker@2
+            inputs:
+              containerRegistry: 'PersonalDockerHub'
+              command: 'login'
+          - task: Docker@2
             displayName: Build image for multiple platforms
             inputs:
               command: buildx
