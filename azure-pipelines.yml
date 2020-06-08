@@ -61,4 +61,4 @@ stages:
               script: |
                 export DOCKER_CLI_EXPERIMENTAL=enabled
                 docker buildx create --use --name xplatbuilder
-                docker buildx build -t $(image):$(tag) --platform $(platform) --output=type=docker ./sample
+                docker buildx build -t $(image):$(tag) --platform $(platform) --output=type=registry ./sample
