@@ -49,6 +49,12 @@ stages:
               script: |
                 docker run --privileged linuxkit/binfmt:v0.8
           - task: Bash@3
+            displayName: Login to DockerHub
+            inputs:
+              targetType: "inline"
+              script: |
+                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          - task: Bash@3
             displayName: Build image for multiple platforms
             inputs:
               targetType: "inline"
